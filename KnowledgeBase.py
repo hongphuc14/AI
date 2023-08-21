@@ -23,29 +23,22 @@ from forward_chaining import forward_chaining
 class Sentence:
     @staticmethod
     def classify(sentence_str):
-        print("sentence_str: ", sentence_str)
         sentence_str = sentence_str.strip()
         if not sentence_str:
             return 'blank'
         if sentence_str.startswith('%'):
             return 'comment'
         if ':-' in sentence_str:
-            print("rule")
             return 'rule'
         return 'fact'
 
     @staticmethod
     def fetch_next(input_str):
         index = 0
-        next_str = input_str[index].strip()
-        if next_str.startswith('/*'):          
-            while not next_str.endswith('*/'):
-                index += 1
-                next_str += input_str[index].strip()
-        elif next_str:                         
-            while not next_str.endswith('.'):
-                index += 1
-                next_str += input_str[index].strip()
+        next_str = input_str[index].strip()   
+        while not next_str.endswith('.'):
+            index += 1
+            next_str += input_str[index].strip()
         return next_str, input_str[index + 1:]
     
 class KnowledgeBase:
@@ -70,19 +63,13 @@ class KnowledgeBase:
         return facts
 
     @staticmethod
-    def populate(kb, list_sentence_str):
-        while list_sentence_str:
-            sentence_str, list_sentence_str = Sentence.fetch_next(list_sentence_str)
-            sentence_type = Sentence.classify(sentence_str)
+    def populate(kb, list_sentences):
+        while list_sentences:
+            sentence, list_sentences = Sentence.fetch_next(list_sentences)
+            sentence_type = Sentence.classify(sentence)
             if sentence_type == 'fact':
-                fact = Fact.parse_fact(sentence_str)
+                fact = Fact.parse_fact(sentence)
                 kb.add_fact(fact)
             elif sentence_type == 'rule':
-                rule = Rule.parse_rule(sentence_str)
+                rule = Rule.parse_rule(sentence)
                 kb.add_rule(rule)
-
-# Các phần còn lại của tệp forward_chaining, fact, main, rule
-# ...
-
-
-

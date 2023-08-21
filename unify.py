@@ -3,7 +3,7 @@ import util
 def unify(x, y, theta):
    if theta is False:
       return False
-   if x == y:        # i.e: Parent = Parent, z = z, Mary = Mary
+   if x == y:        
       return theta
    if util.is_variable(x):
       return unify_var(x, y, theta)
@@ -15,10 +15,10 @@ def unify(x, y, theta):
       return unify(x[1:], y[1:], unify(x[0], y[0], theta))
    return False
 
-def unify_var(var, x, theta):
+def unify_var(var, x, theta): 
    if theta.contains(var):
-      return unify(theta.substitute_of(var), x, theta)
+      return unify(theta.get_substitute(var), x, theta)
    if theta.contains(x):
-      return unify(var, theta.substitute_of(x), theta)
+      return unify(var, theta.get_substitute(x), theta)
    theta.bind(var, x)
    return theta

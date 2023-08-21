@@ -12,32 +12,34 @@
 from KnowledgeBase import KnowledgeBase
 from fact import Fact
 
-def main():
-    # đọc các input chứa dữ kiện kiến thức, truy vấn và output path mong muốn.
-    input_file = 'BritishRoyalFamily.pl'
-    query_file = 'queries.txt'
-    output_file = 'answers.txt'
-
-    kb = KnowledgeBase()
+def read_input_file():
+    input_file = "BritishRoyalFamily.pl"
     with open(input_file, 'r') as f_input:
         sentences = f_input.readlines()
-        KnowledgeBase.populate(kb, sentences)
+    return sentences
 
-    print('Initialized knowledge base from {}.'.format(input_file))
-
+def read_query_file():
+    query_file = "queries.txt"
     with open(query_file, 'r') as f_query:
-        with open(output_file, 'w') as f_output:
-            for query_str in f_query.readlines():
-                alpha = Fact.parse_fact(query_str)
-                alpha_str = str(alpha) + '.'
-                print(alpha_str)
-                substitutions = set(kb.query(alpha))
-                subst_str = ' ;\n'.join([str(subst) for subst in substitutions]) + '.\n'
-                print(subst_str)
-                f_output.write(alpha_str + '\n')
-                f_output.write(subst_str + '\n')
+        queries = f_query.readlines()
+    return queries
 
-    print('Query results from {} written to {}.'.format(query_file, output_file))
+def main():
+    kb = KnowledgeBase()
+    sentences = read_input_file()
+    KnowledgeBase.populate(kb, sentences)
+
+    queries = read_query_file()
+    output_file = "answers.txt"
+    with open(output_file, 'w') as f_output:
+        for query_str in queries:
+            alpha = Fact.parse_fact(query_str)
+            alpha_str = str(alpha)
+            substitutions = set(kb.query(alpha))
+            print(alpha_str)
+            subst_str = ' ;\n'.join([str(subst) for subst in substitutions]) + '.\n'
+            f_output.write(alpha_str + '\n')
+            f_output.write(subst_str + '\n')
 
 if __name__ == "__main__":
     main()
