@@ -2,7 +2,6 @@
 # coding: utf-8
 
 # In[ ]:
-
 from fact import Fact
 class Substitution:
     def __init__(self):
@@ -17,6 +16,9 @@ class Substitution:
     def __hash__(self):
         return hash(frozenset(self.bindings.items()))
 
+    def bind(self, var, value):
+        self.bindings[var] = value
+        
     def empty(self):
         return len(self.bindings) == 0
 
@@ -31,16 +33,12 @@ class Substitution:
             if self.contains(arg):
                 fact.args[idx] = self.get_substitute(arg)
 
-    def bind(self, var, value):
-        self.bindings[var] = value
-
 def is_variable(x):
     return isinstance(x, str) and x[0].isupper()
 
-
+# Checks if an object is a compound logical expression
 def is_compound(x):
     return isinstance(x, Fact)
 
 def is_list(x):
     return isinstance(x, list)
-
